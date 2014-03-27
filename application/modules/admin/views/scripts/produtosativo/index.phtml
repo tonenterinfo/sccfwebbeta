@@ -1,0 +1,41 @@
+<script language="Javascript">
+    function confirmacao(id) {
+        var resposta = confirm("Deseja remover esse registro?");
+ 
+        if (resposta == true) {
+            window.location.href = "<?php echo $this->baseUrl() . '/admin/produtos/deletar/id/'; ?>" + id;
+                    }
+                }
+</script>
+<?php
+if (isset($_SESSION['admin'])) {
+    foreach ($_SESSION['admin'] as $value) {
+        $nivel = $value->nivel;
+    }
+} 
+?>
+<!--<a href="<?php echo $this->url(array('action' => 'new', 'controller' => 'produtos', 'module' => 'admin'), null, 1); ?>" class="btn btn-success"><i class="icon-ok"></i> Adicionar novo registro</a>-->
+<table class="table table-hover">
+    <thead>
+    <th>Item</th>
+        <th>Cod</th>
+        <th>Nome</th>
+        <th>Quantidade</th>
+        <th>Preço</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <?php 
+        $cont = 1;
+        foreach($this->produtos as $value): ?>
+        <tr>
+            <td><?php echo $cont; ?></td>
+            <td><?php echo $value->ID; ?></td>
+            <td><?php echo substr($value->NOME,0,40); ?></td>
+            <td><?php echo number_format($value->QUANTIDADE_ESTOQUE_REAL,2,',','.'); ?></td>
+            <td><?php echo "R$ ". number_format($value->VALOR_VENDA,2,',','.'); ?></td>
+            <td><?php if($nivel == 1) { ?><a href="<?php echo $this->url(array('action' => 'edit', 'controller' => 'produtos', 'module' => 'admin', 'id' => $value['ID']), null, 1); ?>" class="btn"><i class="icon-pencil"></i> Editar</a> <a href="javascript:func()" class="btn" onClick="confirmacao(<?php echo $value['ID']; ?>)"><i class="icon-off"></i> Deletar</a><?php } ?></td>
+        </tr>
+        <?php $cont++ ; endforeach; ?>
+    </tbody>
+</table>

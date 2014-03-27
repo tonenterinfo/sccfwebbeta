@@ -1,0 +1,33 @@
+<p align="left">
+    <input type="hidden" name="ID_ENDERECO_EDIT" value="<?php echo $this->id; ?>" />
+    <input type="hidden" name="ID_PESSOA" value="<?php echo $this->id_pessoa; ?>" />
+    <input class="span8" type="text" placeholder="Logradouro" name="LOGRADOURO_EDIT" value="<?php echo $this->logradouro; ?>"> 
+    <input class="span2" type="text" placeholder="número" name="NUMERO_EDIT" value="<?php echo $this->numero; ?>">
+    <input class="span2" type="text" placeholder="Complemento" name="COMPLEMENTO_EDIT" value="<?php echo $this->complemento; ?>"><br><br>
+    <input class="span4" type="text" placeholder="Cep" name="CEP_EDIT" value="<?php echo $this->cep; ?>">
+    <input class="span4" type="text" placeholder="Bairro" name="BAIRRO_EDIT" value="<?php echo $this->bairro; ?>">
+    <select class="span4" name="UF_EDIT" id="uf_edit">
+        <option value="<?php echo $this->uf; ?>"><?php echo $this->uf; ?></option>
+        <?php foreach ($this->estado as $value) : ?>
+            <option value="<?php echo $value->ID; ?>"><?php echo $value->NOME; ?></option>
+        <?php endforeach; ?>
+    </select><br><br>
+    <select class="span4" name="ID_MUNICIPIO_EDIT" id="combo_cidade_edit">
+        <option value="<?php echo $this->id_municipio; ?>"><?php echo $this->cidade; ?></option>
+    </select>
+    <input class="span4" type="text" placeholder="Telfone" name="FONE_EDIT" value="<?php echo $this->fone; ?>">
+    <input class="span4" type="text" placeholder="Fax" name="FAX_EDIT" value="<?php echo $this->fax; ?>"><br><br>
+    <label class="checkbox inline">
+        <input type="checkbox" id="inlineCheckbox1_edit" value="S" name="PRINCIPAL_EDIT" <?php echo ($this->principal == "S") ? "checked" : ""; ?>> Principal
+    </label>
+    <label class="checkbox inline">
+        <input type="checkbox" id="inlineCheckbox2_edit" value="S" name="ENTREGA_EDIT" <?php echo ($this->entrega == "S") ? "checked" : ""; ?>> Entrega
+    </label>
+    <label class="checkbox inline">
+        <input type="checkbox" id="inlineCheckbox3_edit" value="S" name="COBRANCA_EDIT" <?php echo ($this->cobranca == "S") ? "checked" : ""; ?>> Cobrança
+    </label>
+    <label class="checkbox inline">
+        <input type="checkbox" id="inlineCheckbox4_edit" value="S" name="CORRESPONDENCIA_EDIT" <?php echo ($this->correspondencia == "S") ? "checked" : ""; ?>> Correspondencia
+    </label>
+    <br> 
+</p>

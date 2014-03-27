@@ -1,0 +1,222 @@
+<style>.row {margin-left: 25px;} #nome{ width: 70%; } .saida-produto, .up{width: 110px;} .saida-produto-carrinho{width: 50px;} #produtos{background: #f4f4f4; padding: 10px;} .align{float: right;} #valor_total{width: 70px;}</style>
+<script src="http://sccfwebbeta/js/jquery.min.js"></script>
+        
+<!--    <link href="http://sccfwebbeta/js/select2-3.4.5/select2.css" rel="stylesheet"/>
+        <script src="http://sccfwebbeta/js/select2-3.4.5/select2.js"></script>
+        <script>
+            $(document).ready(function() {
+                $("#prod").select2();
+            });
+        </script>-->
+    
+<ul class="breadcrumb">
+    <li><a href="/admin">Início</a> <span class="divider">/</span></li>
+    <li><a href="/admin/entradaproduto">Saída produtos</a> <span class="divider">/</span></li> 
+    <li class="active">Nova saída ou orçamento</li>
+</ul>
+
+<ul class="nav nav-tabs" id="myTab">
+    <li class="active"><a href="#dados" data-toggle="tab">Dados</a></li>
+    <li><a href="#faturamento" data-toggle="tab">Faturamento</a></li>
+</ul>
+<form action="/admin/saidaproduto/cadastrasaida" method="post">
+<div class="tab-content">
+    <div class="tab-pane active" id="dados">
+         <div class="row">
+            Data da venda:
+            <input type="text" class="saida-produto" name="DATA_CADASTRO" value="<?php echo date('d/m/Y'); ?>">
+        </div>    
+       
+        <div class="span4">
+            <label class="control-label" for="inputEmail">Tipo:</label>
+            <div class="controls"> 
+                <label class="radio inline">
+                    <input type="radio" name="TIPO" id="tipo1" value="S" checked>
+                    Saída
+                </label>
+                <label class="radio inline">
+                    <input type="radio" name="TIPO" id="tipo" value="O">
+                    Orçamento
+                </label>
+            </div>
+        </div>
+
+        <div class="span4">
+            <div class="control-group">
+                <label class="control-label" for="inputEmail">Cliente:</label>
+                <div class="controls" >
+                    <select span="3" name="ID_CLIENTE" id="cliente" autofocus="true">
+                        <?php foreach ($this->clientes as $value): ?>
+                            <option value="<?php echo $value->ID; ?>"><?php echo $value->NOME; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="span3">
+            <div class="control-group">
+                <label class="control-label" for="inputEmail">Observações:</label>
+                <div class="controls" >
+                    <textarea rows="3" name="OBSERVACAO"></textarea>
+                </div>
+            </div>
+        </div>
+        
+    
+        <div class="span11" id="produtos">
+            <div class="span2">
+                <label class="control-label">Código:</label>
+                <div class="controls" >
+                    <input type="text" class="saida-produto" name="CODIGO_BARRA" value="">
+                </div>
+            </div>
+            <div class="span2">
+                <label class="control-label">Produto:</label>
+                <div class="controls">
+                    <select  name="" class="saida-produto" id="prod">
+                        <?php foreach ($this->produtos as $value): ?>
+                            <option value="<?php echo $value->ID . '-' . $value->VALOR_VENDA; ?>"><?php echo $value->NOME . ' - ' . number_format($value->QUANTIDADE_ESTOQUE_REAL, 2, ',', '.') . ' - R$' . number_format($value->VALOR_VENDA, 2, ',', '.'); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+            <div class="span2">
+                <label class="control-label">Quantidade:</label>
+                <div class="controls" >
+                    <input type="text" class="saida-produto" id="quantidade" name="QUANTIDADE" value="">
+                </div>
+            </div>
+
+            <div class="span2">
+                <label class="control-label">% desconto:</label>
+                <div class="controls" >
+                    <input type="text" class="saida-produto" name="DESCONTO" id="desconto" value="">
+                </div>
+            </div>
+            <div class="span2">
+                <label class="control-label" >Total:</label>
+                <div class="controls" >
+                    <input type="text" class="saida-produto" name="TOTAL" id="total" value="" readonly="readonly">
+                </div>
+            </div>
+            <div class="span2">
+                <label class="control-label">.</label>
+                <div class="controls" >
+                    <button class="btn btn-primary" id="adicionar" type="button">Adicionar</button>
+                    <button class="btn btn-mini" id="recarregar" type="button"><i class="icon-refresh"></i></button>
+                </div>
+            </div>
+
+            <table class="table table-hover">
+                <thead>
+                <th>Produto</th>
+                <th>Valor Unit.</th>
+                <th>Qtd</th>
+                <th>% Desconto</th>
+                <th>Total</th>
+                </thead>
+                <tbody id="retorno_produtos_carrinho">   
+
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+    <div class="tab-pane" id="faturamento">
+        <button class="btn btn-primary" id="adicionar_forma_pagamento" type="button">Adicionar forma de pagamento</button>
+        <table class="table table-hover">
+            <thead>
+            <th>Forma de pag.</th>
+            <th>Condição</th>
+            <th>Acréscimo (% ao mês)</th>
+            <th>Parcelas</th>
+            <th>Total</th>
+            </thead>
+            <tbody id="formas_pgmto">   
+                <tr>
+                    <td> 
+                        <select span="3" name="forma_pagamento[]" class="saida-produto">
+                            <option value="1">Dinheiro</option>
+                            <option value="2">Boleto</option>
+                            <option value="3">Nota promissória</option>
+                            <option value="4">Cheque</option>
+                            <option value="5">Cartão de crédito</option>
+                        </select>
+                    </td>
+                    <td><select span="3" name="condicao_pagamento[]" id="condicao_pagamento1" class="saida-produto">
+                            <?php foreach ($this->condicoesPagamento as $value): ?>
+                                <option value="<?php echo $value->ID; ?>"><?php echo $value->NOME; ?></option>
+                            <?php endforeach; ?>
+                        </select></td>
+                    <td><input type="text" name="acrescimo[]" id="acrescimo_1" class="up" /></td>
+                    <td><input type="text" name="parcelas[]" id="parcelas_1" class="saida-produto" /></td>
+                    <td><input type="text" name="total_parcelas[]" id="total_parcelas1" class="saida-produto" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>   
+   
+</div>
+<br>
+<div class="control-group">
+    <div class="controls">
+        <button type="submit" class="btn btn-large btn-success">Cadastrar</button>
+    </div>
+</div>
+ </form>
+
+<script src="/js/saida/actions.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var cont = 2;
+    var addFormaPgmto = function() {
+        var inputs = '<tr><td>';
+        inputs += '<select span="3" name="forma_pagamento[]" class="saida-produto">';
+        inputs += '<option value="1">Dinheiro</option>';
+        inputs += '<option value="2">Boleto</option>';
+        inputs += '<option value="3">Nota promissória</option>';
+        inputs += '<option value="4">Cheque</option>';
+        inputs += '<option value="5">Cartão de crédito</option>';
+        inputs += '</select></td>';
+        inputs += '<td><select span="3" name="condicao_pagamento[]" id="condicao_pagamento' + cont + '" class="saida-produto">';
+        inputs += '<?php foreach ($this->condicoesPagamento as $value): ?>';
+        inputs += '<option value="<?php echo $value->ID; ?>"><?php echo $value->NOME; ?></option>';
+        inputs += '<?php endforeach; ?></select></td>';
+        inputs += '<td><input type="text" name="acrescimo[]" id="acrescimo_' + cont + '" class="up" /></td>';
+        inputs += '<td><input type="text" name="parcelas[]" id="parcelas_' + cont + '" class="saida-produto" /></td>';
+        inputs += '<td><input type="text" name="total_parcelas[]" id="total_parcelas' + cont + '" class="saida-produto" /></td></tr>'
+        cont++;
+        $("#formas_pgmto").append(inputs);
+    };
+
+    var up = function() {
+        var id = $(this).attr("id");
+        var quebra = id.split("_");
+        var condicao = $(this).parents('#formas_pgmto').find('#condicao_pagamento' + quebra[1] + '').val();
+        var acrescimo = $(this).parents('#formas_pgmto').find('#acrescimo_' + quebra[1] + '').val();
+        var total_compra = $("#valor_total").val();
+        var total_parcelas = 0.00;
+        for(var i=1; i <= cont; i++) {
+            if($('#total_parcelas'+i+'').val() > 0) {
+                total_parcelas += parseFloat($('#total_parcelas'+i+'').val());
+            }
+        }
+
+        $.get('/admin/saidaproduto/calculaparcelas/condicao/' + condicao + '/acrescimo/' + acrescimo + '/totalcompra/' + total_compra + '/totalparcelas/' + total_parcelas + '', function(resultado) {
+            var quebrada = resultado.split("|");
+            var resultInput = quebrada[1];
+            $('#total_parcelas'+quebra[1]+'').val(quebrada[1]);
+            $('#parcelas_'+quebra[1]+'').val(quebrada[0]);
+        });
+    }
+
+    $('#adicionar_forma_pagamento').bind('click', addFormaPgmto);
+
+    $(document).ready(function() {
+        $(".up").live('blur', up);
+    });
+
+
+</script>    
+
+
+<script src="/bootstrap/js/jquery.js"></script>

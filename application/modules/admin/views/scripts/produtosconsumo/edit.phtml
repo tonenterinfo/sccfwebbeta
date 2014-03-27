@@ -1,0 +1,179 @@
+<style> #nome{ width: 70%; } </style>
+<ul class="breadcrumb">
+    <li><a href="/admin">Início</a> <span class="divider">/</span></li>
+    <li><a href="/admin/produtos">Produtos</a> <span class="divider">/</span></li> 
+    <li class="active">Editar registro</li>
+</ul>
+<ul class="nav nav-tabs" id="myTab">
+    <li class="active"><a href="#produto" data-toggle="tab">Cadastro do produto</a></li>
+    <li><a href="#fornecedor" data-toggle="tab">Fornecedores deste produto</a></li>
+    <li><a href="#historico" data-toggle="tab">Histórico de compras deste produto</a></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="produto">
+        <form action="" method="post" class="form-horizontal">
+
+            <div class="control-group">
+                <label class="control-label" for="inputEmail">Cód. de Barras (EAN)</label>
+                <div class="controls">
+                    <input type="text" id="inputEmail" name="CODIGO_BARRAS" value="<?php echo $this->codigo_barras; ?>">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputNome">Nome</label>
+                <div class="controls">
+                    <input type="text" id="nome" placeholder="Nome do produto" name="NOME" value="<?php echo $this->nome; ?>">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputNome">Grupo</label>
+                <div class="controls">
+                    <?php
+                    $grupo = new Application_Model_DbTable_Grupoproduto();
+                    $grup = $grupo->find($this->grupo_id)->current();
+                    ?>
+                    <select name="ID_GRUPO">
+                        <?php if ($grup->NOME == !""): ?>
+                            <option value="<?php echo $this->grupo_id; ?>"><?php echo $grup->NOME; ?></option>
+                        <?php endif; ?>
+                        <?php foreach ($this->grupo as $val): ?>
+                            <option value="<?php echo $val->ID; ?>"><?php echo $val->NOME; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputNome">Quant. em estoque</label>
+                <div class="controls">
+                    <input type="text" id="qtdEstoque" name="QUANTIDADE_ESTOQUE" value="<?php echo number_format($this->qtd, 2, ',', '.'); ?>">
+                    <script type="text/javascript">$("#qtdEstoque").maskMoney({thousands: '.', decimal: ','});</script>	
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputNome">ER</label>
+                <div class="controls">
+                    <input type="text" id="qtdEstoqueReal" name="QUANTIDADE_ESTOQUE_REAL" value="<?php echo number_format($this->qtdReal, 2, ',', '.'); ?>">
+                    <script type="text/javascript">$("#qtdEstoqueReal").maskMoney({thousands: '.', decimal: ','});</script>	
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputEmail">Preço de compra</label>
+                <div class="controls">
+                    <input type="text" id="precoCompra" name="VALOR_COMPRA" value="<?php echo number_format($this->valor_compra, 2, ',', '.'); ?>">
+                    <script type="text/javascript">$("#precoCompra").maskMoney({symbol: 'R$ ', thousands: '.', decimal: ',', symbolStay: true});</script>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="inputEmail">Preço de venda</label>
+                <div class="controls">
+                    <input type="text" id="precoVenda" name="VALOR_VENDA" value="<?php echo number_format($this->valor_venda, 2, ',', '.'); ?>">
+                    <script type="text/javascript">$("#precoVenda").maskMoney({symbol: 'R$ ', thousands: '.', decimal: ',', symbolStay: true});</script>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="inputEmail">NCM</label>
+                <div class="controls">
+                    <input type="text" id="inputEmail" name="NCM" value="<?php echo $this->ncm; ?>">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="inputEmail">CST</label>
+                <div class="controls">
+                    <input type="text" id="inputEmail" name="CST_NF" value="<?php echo $this->cst; ?>">
+                </div>
+            </div>
+
+<!--            <div class="control-group">
+                <label class="control-label" for="inputEmail">CFOP Entrada</label>
+                <div class="controls">
+                    <?php
+                    if($this->cfopx > 0) {
+                    $cfop = new Application_Model_DbTable_CFOP();
+                    $cfo = $cfop->find($this->cfopx)->current();
+                    }
+                    ?>
+                    <select name="ID_CFOP">
+                        <?php if ($cfo->CFOP == !""): ?>
+                            <option value="//<?php echo $this->cfopx; ?>"><?php echo $cfo->CFOP." - ".$cfo->DESCRICAO; ?></option>
+                        <?php endif; ?>
+                        <?php foreach ($this->cfop as $val): ?>
+                            <option value="<?php echo $val->ID; ?>"><?php echo $val->CFOP." - ".$val->DESCRICAO; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>-->
+
+            <div class="control-group">
+                <label class="control-label" for="inputNome">Destino</label>
+                <div class="controls">
+                    <select name="DESTINO">
+                        <?php
+                        switch ($this->destino) {
+                            case 0:
+                                echo '<option value="0">Comercialização</option>';
+                                break;
+                            case 1:
+                                echo '<option value="1">Consumo</option>';
+                                break;
+                            case 2:
+                                echo '<option value="2">Ativo</option>';
+                                break;
+                        }
+                        ?>
+                        <option value="0">Comercialização</option>
+                        <option value="1">Consumo</option>
+                        <option value="2">Ativo</option>
+                        <option value="3">Serviço</option>
+                    </select>
+                </div>
+            </div>
+
+
+    </div>
+    <div class="tab-pane" id="fornecedor">
+        <ul>
+            <?php foreach ($this->fornsprod as $value): ?>
+                <li><?php 
+                $pessoas = new Application_Model_DbTable_Pessoa();
+                $pessoa = $pessoas->find($value->ID_FORNECEDOR)->current();
+                echo "<a href='/admin/pessoas/edit/id/".$value->ID_FORNECEDOR."/classe/2'>".$pessoa->NOME."</a>"; ?></li>
+                <?php endforeach; ?>
+            </ul>
+            <div class="control-group">
+        <label class="control-label" for="inputNome">Fornecedor</label>
+        <div class="controls">
+            <select name="ID_FORNECEDOR">
+                <option value=""></option>
+                <?php foreach ($this->fornecedores as $val): ?>
+                    <option value="<?php echo $val->ID; ?>"><?php echo $val->NOME; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+        </div>  
+        <div class="tab-pane" id="historico">
+            <?php 
+            $detalhe = new Application_Model_DbTable_NFedetalhe();
+            $rdata = $detalhe->fetch($this->id);
+            if(isset($rdata[0])) {
+                foreach ($rdata as $val) {
+
+                    $nfeCab = new Application_Model_DbTable_NFecabecalho();
+                    $rcab = $nfeCab->find($val->ID_NFE_CABECALHO)->current();
+                    $pessoa = new Application_Model_Pessoa(); $fornecedor = $pessoa->findAnything('pessoa', 'ID', $rcab->ID_FORNECEDOR); $forn =  $fornecedor[0]->NOME;
+                    echo date('d/m/Y', strtotime($rcab->DATA_EMISSAO)). ' - '. $forn . ' - R$' .number_format($val->VALOR_UNITARIO_COMERCIAL,2,',','.')." - CFOP: ".$val->CFOP."<br>";
+                }
+            }
+            ?>
+        </div>  
+</div>
+<div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-large btn-success">Cadastrar</button>
+                </div>
+            </div>
+        </form>

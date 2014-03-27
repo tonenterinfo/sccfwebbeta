@@ -1,0 +1,41 @@
+<script language="Javascript">
+    function confirmacao(id) {
+        var resposta = confirm("Deseja remover esse registro?");
+ 
+        if (resposta == true) {
+            window.location.href = "<?php echo $this->baseUrl() . '/admin/produtos/deletar/id/'; ?>"+id;
+        }
+    }
+</script>
+<!--<a href="<?php echo $this->url(array('action'=>'new','controller'=>'entradaproduto','module'=>'admin'),null,1); ?>" class="btn btn-success"><i class="icon-ok"></i> Adicionar novo registro</a>-->
+<!--<br><br>-->
+<form method="post" action="/admin/entradaproduto/new" enctype="multipart/form-data" >
+<lable>Entrada com XML:</lable>
+<input type="hidden" name="MAX_FILE_SIZE" value="10485760" id="MAX_FILE_SIZE" />
+<input type="file" name="xml" class="btn" />
+<input type="submit" name="envia_xml" value="OK" class="btn btn-large btn-primary" />
+</form>
+<table class="table table-hover">
+    <thead>
+        <th>nº</th>
+        <th>Cod</th>
+        <th>Data Emissão</th>
+        <th>Fornecedor</th>
+        <th>Total</th>
+    </thead>
+    <tbody>   
+        <?php $cont = 1; foreach($this->nfeCabecalho as $value): ?>
+        <tr>
+            <td><?php echo $cont; ?></td>
+            <td><?php echo $value->CODIGO_NUMERICO; ?></td>
+            <td><?php echo date("d/m/Y", strtotime($value->DATA_EMISSAO)); ?></td>
+            <td><?php 
+                $pessoas = new Application_Model_DbTable_Pessoa();
+                $pessoa = $pessoas->find($value->ID_FORNECEDOR)->current();
+                echo $pessoa->NOME;
+            ?></td>
+            <td><?php echo ($value->VALOR_TOTAL != NULL) ? "R$ ".number_format($value->VALOR_TOTAL,2,',','.') : "R$ ".number_format($value->VALOR_TOTAL_PRODUTOS + $value->VALOR_FRETE,2,',','.'); ?></td>
+        </tr>
+        <?php $cont++; endforeach; ?>
+    </tbody>
+</table>

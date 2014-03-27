@@ -1,0 +1,26 @@
+<script language="Javascript">
+    function confirmacao(id) {
+        var resposta = confirm("Deseja remover esse registro?");
+ 
+        if (resposta == true) {
+            window.location.href = "<?php echo $this->baseUrl() . '/admin/tipomaterial/deletar/id/'; ?>"+id";
+        }
+    }
+</script>
+<a href="<?php echo $this->url(array('action'=>'new','controller'=>'grupoproduto','module'=>'admin', 'tipo'=>$this->tipoId),null,1); ?>" class="btn btn-success"><i class="icon-ok"></i> Adicionar novo registro</a>
+<table class="table table-hover">
+    <thead>
+        
+        <th>Nome</th>
+         <th></th>
+    </thead>
+    <tbody>
+        <?php 
+        foreach($this->grupos as $value): ?>
+        <tr>
+            <td><?php echo $value->NOME; ?></td>
+            <td><a href="<?php echo $this->url(array('action' => 'edit', 'controller' => 'grupoproduto', 'module' => 'admin', 'id' => $value['ID']), null, 1); ?>" class="btn"><i class="icon-pencil"></i> Editar</a> <a href="javascript:func()" class="btn" onClick="confirmacao(<?php echo $value['ID']; ?>)"><i class="icon-off"></i> Deletar</a></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

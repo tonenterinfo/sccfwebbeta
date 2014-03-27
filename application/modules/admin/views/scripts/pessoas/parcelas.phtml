@@ -1,0 +1,37 @@
+<table class="table table-hover">
+	<tbody>
+		<?php foreach ($this->parcelas as $value): ?>
+		<tr> 
+			<td> 
+				<?php 
+                switch ($value->ID_STATUS_PARCELA) {
+                    case 1:
+                        echo '<span class="label label-warning">A Pagar</span>';
+                        break;
+                    case 2: 
+                        echo '<span class="label label-success">Paga</span>';
+                        break;
+                    case 3: 
+                        echo '<span class="label label-info">Recebida parcialmente</span>';
+                        break;
+                    case 4: 
+                        echo '<span class="label label-important"">Vencida</span>';
+                        break;
+                    } 
+                ?>
+				<?php 
+				if($value->ID_STATUS_PARCELA == 2 or $value->ID_STATUS_PARCELA == 3) {
+                $parcela = new Application_Model_DbTable_Parcelarecebimento();
+                $select = $parcela->select();
+                $select->from('parcela_recebimento')->where('ID_PARCELA_RECEBER = '.$value->ID);
+                $rdata = $parcela->fetchAll($select);
+                echo "Pago dia: ".date('d/m/Y', strtotime($rdata[0]->DATA_RECEBIMENTO))." | ";
+            } ?>
+            Valor da parcela: R$ <?php echo number_format($value->VALOR,2,',','.'); ?> | <?php echo  ($value->ID_STATUS_PARCELA == 2) ? "Valor pago: R$   | <a href=''>Estornar</a> | <a href=''>Recibo</a>" : " Valor a pagar: R$ | <a href='/admin/contasreceber/edit/id/".$value->ID."'>Receber</a>" ?>  
+			</td>
+		</tr>
+				
+		<?php endforeach; ?>
+
+	</tbody>
+</table>

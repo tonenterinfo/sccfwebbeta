@@ -1,0 +1,288 @@
+<style type="text/css">
+    #descricao {width: 350px;} #operador {width: 50px;}
+</style>
+<ul class="breadcrumb">
+    <li><a href="/admin">Início</a> <span class="divider">/</span></li>
+    <li class="active">Fluxo de Caixa</li>
+</ul>
+<form class="form-inline" action="" method="post">
+    <input type="text" class="input-small" name="inicial" placeholder="Data inicial" value="<?php echo (isset($this->dataInicial)) ? date('d/m/Y', strtotime($this->dataInicial)) : date('d/m/Y'); ?>">
+    <input type="text" class="input-small" name="final" placeholder="Data final" value="<?php echo (isset($this->dataFinal)) ? date('d/m/Y', strtotime($this->dataFinal)) : date('d/m/Y'); ?>">
+    <button type="submit" class="btn">OK</button>
+</form>
+<?php
+$saldoInicialCaixa = 44.45; // 28/11/2013
+$saldoInicialBancoBB = 0;
+$saldoInicialBancoCEF = 0;
+
+$somaRecebimentoCaixa = 0;
+$somaRecebimentoBB = 0;
+$somaRecebimentoCEF = 0;
+$somaPagamentoCaixa = 0;
+$somaPagamentoBB = 0;
+$somaPagamentoCEF = 0;
+
+$totalFluxoCaixa = 0;
+$totalFluxoBB = 0;
+$totalFluxoCEF = 0;
+?>
+<ul class="nav nav-tabs" id="myTab">
+    <li class="active"><a href="#caixa" data-toggle="tab">Caixa</a></li>
+    <li><a href="#contaBB" data-toggle="tab">Conta BB</a></li>
+    <li><a href="#contaCEF" data-toggle="tab">Conta CEF</a></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="caixa">
+        <form class="form-inline" action="" method="post">
+    <input type="text" class="input-small" name="DATA" placeholder="Data" id="data" value="<?php echo date('d/m/Y'); ?>">
+    <input type="text" class="input-small" name="DESCRICAO" id="descricao" placeholder="Descrição" value="">
+    <select name="OPERADOR" id="operador">
+        <option value="+">+</option>
+        <option value="-">-</option>
+    </select>
+    <input type="text" class="input-small" name="VALOR" placeholder="Valor R$" value="">
+    <input type="hidden" class="input-small" name="inicial" placeholder="Data inicial" value="<?php echo (isset($this->dataInicial)) ? date('d/m/Y', strtotime($this->dataInicial)) : date('d/m/Y'); ?>">
+    <input type="hidden" class="input-small" name="final" placeholder="Data final" value="<?php echo (isset($this->dataFinal)) ? date('d/m/Y', strtotime($this->dataFinal)) : date('d/m/Y'); ?>">
+    <input type="hidden" name="DESTINO" value="1">
+    <button type="submit" class="btn">Inserir no fluxo de caixa</button>
+</form>
+        <table class="table table-hover">
+            <thead>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+            </thead>
+            <tbody>
+                <?php
+                if (isset($this->recebimentos)) {
+        
+                    foreach ($this->venda as $value) {        
+                        if ($value->ID_VENDA_CONDICAO_PAGAMENTO == 1) {
+                            echo '<tr>';
+                            $pessoa = new Application_Model_Pessoa();
+                            $cliente = $pessoa->findAnything('pessoa', 'ID', $value->ID_CLIENTE);
+                            $cli = $cliente[0]->NOME;
+                            echo '<td>' . date('d/m/Y', strtotime($value->DATA)) . ' </td><td> ' . $cli . '</td><td> <span class="label label-success">+ R$ ' . number_format($value->TOTAL, 2, ',', '.') . "</span></td>";
+                            echo '</tr>';
+                            $somaRecebimentoCaixa += $value->TOTAL;
+                        }
+                    }
+
+                    foreach ($this->recebimentos as $value) {
+                        if ($value->ID_TIPO_RECEBIMENTO == 1) {
+                            echo '<tr>';
+                            $pessoa = new Application_Model_Pessoa();
+                            $cliente = $pessoa->findAnything('pessoa', 'ID', $value->ID_CLIENTE);
+                            $cli = $cliente[0]->NOME;
+                            echo '<td>' . date('d/m/Y', strtotime($value->DATA_RECEBIMENTO)) . ' </td><td> ' . $cli . '</td><td> <span class="label label-success">+ R$ ' . number_format($value->VALOR_RECEBIDO, 2, ',', '.') . "</span></td>";
+                            echo '</tr>';
+                            $somaRecebimentoCaixa += $value->VALOR_RECEBIDO;
+                        }
+                    }
+
+                    foreach ($this->pagamentos as $value) {
+                        if ($value->ID_TIPO_PAGAMENTO == 1) {
+                            echo '<tr>';
+                            $lancamento = new Application_Model_DbTable_Lancamentopagar();
+                            $rlancamento = $lancamento->find($value->ID_LANCAMENTO_PAGAR)->current();
+                            $pessoa = new Application_Model_Pessoa();
+                            $fornecedor = $pessoa->findAnything('pessoa', 'ID', $rlancamento->ID_FORNECEDOR);
+                            $forn = $fornecedor[0]->NOME;
+                            echo'<td>' . date('d/m/Y', strtotime($value->DATA_PAGAMENTO)) . ' </td><td> ' . $forn . '</td><td> <span class="label label-important">- R$ ' . number_format($value->VALOR_PAGO, 2, ',', '.') . "</span></td>";
+                            echo '</tr>';
+                            $somaPagamentoCaixa += $value->VALOR_PAGO;
+                        }
+                    }
+                    foreach ($this->fluxo as $value) {
+                        if ($value->DESTINO == 1) {
+                            echo '<tr>';
+                            
+                            echo'<td>' . date('d/m/Y', strtotime($value->DATA)) . ' </td><td> ' . $value->DESCRICAO;
+                            if($value->OPERADOR == '+') {
+                                echo '</td><td> <span class="label label-success">+ R$ ' . number_format($value->VALOR, 2, ',', '.') . '</span><a href="/admin/fluxodecaixa/deletar/id/'.$value->ID.'" title="Deletar registro"> - </a></td>';
+                                $totalFluxoCaixa += +$value->VALOR;
+                            }
+                            if($value->OPERADOR == '-') {
+                                echo '</td><td> <span class="label label-important">- R$ ' . number_format($value->VALOR, 2, ',', '.') . '</span> <a href="/admin/fluxodecaixa/deletar/id/'.$value->ID.'" title="Deletar registro"> - </a></td>';
+                                $totalFluxoCaixa += -$value->VALOR;
+                            }
+                            echo '</tr>';
+                            
+                        }
+                    }
+                }
+                ?>
+                <tr>
+                    <td colspan="3">R$ em caixa: <b>R$ <?php $totalCx = $somaRecebimentoCaixa - $somaPagamentoCaixa + $saldoInicialCaixa;
+
+                        $totalCx = $totalCx + ($totalFluxoCaixa);
+                    
+                    echo number_format($totalCx, 2,',','.');
+                    ?></b></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" id="contaBB">
+        <form class="form-inline" action="" method="post">
+    <input type="text" class="input-small" name="DATA" placeholder="Data" id="data" value="<?php echo date('d/m/Y'); ?>">
+    <input type="text" class="input-small" name="DESCRICAO" id="descricao" placeholder="Descrição" value="">
+    <select name="OPERADOR" id="operador">
+        <option value="+">+</option>
+        <option value="-">-</option>
+    </select>
+    <input type="text" class="input-small" name="VALOR" placeholder="Valor R$" value="">
+    <input type="hidden" class="input-small" name="inicial" placeholder="Data inicial" value="<?php echo (isset($this->dataInicial)) ? date('d/m/Y', strtotime($this->dataInicial)) : date('d/m/Y'); ?>">
+    <input type="hidden" class="input-small" name="final" placeholder="Data final" value="<?php echo (isset($this->dataFinal)) ? date('d/m/Y', strtotime($this->dataFinal)) : date('d/m/Y'); ?>">
+    <input type="hidden" name="DESTINO" value="2">
+    <button type="submit" class="btn">Inserir no fluxo de caixa BB</button>
+</form>
+        <table class="table table-hover">
+            <thead>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+            </thead>
+            <tbody>
+                <?php
+                if (isset($this->recebimentos)) {
+
+                    foreach ($this->recebimentos as $value) {
+                        if ($value->ID_TIPO_RECEBIMENTO == 3 or $value->ID_TIPO_RECEBIMENTO == 5) {
+                            echo '<tr>';
+                            $pessoa = new Application_Model_Pessoa();
+                            $cliente = $pessoa->findAnything('pessoa', 'ID', $value->ID_CLIENTE);
+                            $cli = $cliente[0]->NOME;
+                            echo '<td>' . date('d/m/Y', strtotime($value->DATA_RECEBIMENTO)) . ' </td><td> ' . $cli . '</td><td> <span class="label label-success">+ R$ ' . number_format($value->VALOR_RECEBIDO, 2, ',', '.') . "</span></td>";
+                            echo '</tr>';
+                            $somaRecebimentoBB += $value->VALOR_RECEBIDO;
+                        }
+                    }
+
+                    foreach ($this->pagamentos as $value) {
+                        if ($value->ID_TIPO_PAGAMENTO == 2 or $value->ID_TIPO_PAGAMENTO == 3 or $value->ID_TIPO_PAGAMENTO == 4 or $value->ID_TIPO_PAGAMENTO == 5 or $value->ID_TIPO_PAGAMENTO == 6) {
+                            echo '<tr>';
+                            $lancamento = new Application_Model_DbTable_Lancamentopagar();
+                            $rlancamento = $lancamento->find($value->ID_LANCAMENTO_PAGAR)->current();
+                            $pessoa = new Application_Model_Pessoa();
+                            $fornecedor = $pessoa->findAnything('pessoa', 'ID', $rlancamento->ID_FORNECEDOR);
+                            $forn = $fornecedor[0]->NOME;
+                            echo'<td>' . date('d/m/Y', strtotime($value->DATA_PAGAMENTO)) . ' </td><td> ' . $forn . '</td><td> <span class="label label-important">- R$ ' . number_format($value->VALOR_PAGO, 2, ',', '.') . "</span></td>";
+                            echo '</tr>';
+                            $somaPagamentoBB += $value->VALOR_PAGO;
+                        }
+                    }
+                    
+                    foreach ($this->fluxo as $value) {
+                        if ($value->DESTINO == 2) {
+                            echo '<tr>';
+                            
+                            echo'<td>' . date('d/m/Y', strtotime($value->DATA)) . ' </td><td> ' . $value->DESCRICAO;
+                            if($value->OPERADOR == '+') {
+                                echo '</td><td> <span class="label label-success">+ R$ ' . number_format($value->VALOR, 2, ',', '.') . '</span><a href="/admin/fluxodecaixa/deletar/id/'.$value->ID.'" title="Deletar registro"> - </a></td>';
+                                $totalFluxoBB += +$value->VALOR;
+                            }
+                            if($value->OPERADOR == '-') {
+                                echo '</td><td> <span class="label label-important">- R$ ' . number_format($value->VALOR, 2, ',', '.') . '</span><a href="/admin/fluxodecaixa/deletar/id/'.$value->ID.'" title="Deletar registro"> - </a></td>';
+                                $totalFluxoBB += -$value->VALOR;
+                            }
+                            echo '</tr>';
+                            
+                        }
+                    }
+                    
+                }
+                ?>
+                <tr>
+                    <td colspan="3">R$ em caixa: <b>R$ <?php $totalBB = $somaRecebimentoBB - $somaPagamentoBB + $saldoInicialBancoBB;
+
+                        $totalBB = $totalBB + ($totalFluxoBB);
+                    
+                    echo number_format($totalBB, 2,',','.');
+                    ?></b></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" id="contaCEF">
+        <form class="form-inline" action="" method="post">
+    <input type="text" class="input-small" name="DATA" placeholder="Data" id="data" value="<?php echo date('d/m/Y'); ?>">
+    <input type="text" class="input-small" name="DESCRICAO" id="descricao" placeholder="Descrição" value="">
+    <select name="OPERADOR" id="operador">
+        <option value="+">+</option>
+        <option value="-">-</option>
+    </select>
+    <input type="text" class="input-small" name="VALOR" placeholder="Valor R$" value="">
+    <input type="hidden" class="input-small" name="inicial" placeholder="Data inicial" value="<?php echo (isset($this->dataInicial)) ? date('d/m/Y', strtotime($this->dataInicial)) : date('d/m/Y'); ?>">
+    <input type="hidden" class="input-small" name="final" placeholder="Data final" value="<?php echo (isset($this->dataFinal)) ? date('d/m/Y', strtotime($this->dataFinal)) : date('d/m/Y'); ?>">
+    <input type="hidden" name="DESTINO" value="3">
+    <button type="submit" class="btn">Inserir no fluxo de caixa CEF</button>
+</form>
+        <table class="table table-hover">
+            <thead>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+            </thead>
+            <tbody>
+                <?php
+                if (isset($this->recebimentos)) {
+
+                    foreach ($this->recebimentos as $value) {
+                        if ($value->ID_TIPO_RECEBIMENTO == 2 or $value->ID_TIPO_RECEBIMENTO == 4) {
+                            echo '<tr>';
+                            $pessoa = new Application_Model_Pessoa();
+                            $cliente = $pessoa->findAnything('pessoa', 'ID', $value->ID_CLIENTE);
+                            $cli = $cliente[0]->NOME;
+                            echo '<td>' . date('d/m/Y', strtotime($value->DATA_RECEBIMENTO)) . ' </td><td> ' . $cli . '</td><td> <span class="label label-success">+ R$ ' . number_format($value->VALOR_RECEBIDO, 2, ',', '.') . "</span></td>";
+                            echo '</tr>';
+                            $somaRecebimentoCEF+= $value->VALOR_RECEBIDO;
+                        }
+                    }
+
+                    foreach ($this->pagamentos as $value) {
+                        if ($value->ID_TIPO_PAGAMENTO == 7 or $value->ID_TIPO_PAGAMENTO == 8) {
+                            echo '<tr>';
+                            $lancamento = new Application_Model_DbTable_Lancamentopagar();
+                            $rlancamento = $lancamento->find($value->ID_LANCAMENTO_PAGAR)->current();
+                            $pessoa = new Application_Model_Pessoa();
+                            $fornecedor = $pessoa->findAnything('pessoa', 'ID', $rlancamento->ID_FORNECEDOR);
+                            $forn = $fornecedor[0]->NOME;
+                            echo'<td>' . date('d/m/Y', strtotime($value->DATA_PAGAMENTO)) . ' </td><td> ' . $forn . '</td><td> <span class="label label-important">- R$ ' . number_format($value->VALOR_PAGO, 2, ',', '.') . "</span></td>";
+                            echo '</tr>';
+                            $somaPagamentoCEF += $value->VALOR_PAGO;
+                        }
+                    }
+                    foreach ($this->fluxo as $value) {
+                        if ($value->DESTINO == 3) {
+                            echo '<tr>';
+                            
+                            echo'<td>' . date('d/m/Y', strtotime($value->DATA)) . ' </td><td> ' . $value->DESCRICAO;
+                            if($value->OPERADOR == '+') {
+                                echo '</td><td> <span class="label label-success">+ R$ ' . number_format($value->VALOR, 2, ',', '.') . '</span><a href="/admin/fluxodecaixa/deletar/id/'.$value->ID.'" title="Deletar registro"> - </a></td>';
+                                $totalFluxoCEF += +$value->VALOR;
+                            }
+                            if($value->OPERADOR == '-') {
+                                echo '</td><td> <span class="label label-important">- R$ ' . number_format($value->VALOR, 2, ',', '.') . '</span><a href="/admin/fluxodecaixa/deletar/id/'.$value->ID.'" title="Deletar registro"> - </a></td>';
+                                $totalFluxoCEF += -$value->VALOR;
+                            }
+                            echo '</tr>';
+                            
+                        }
+                    }
+                }
+                ?>
+                <tr>
+                    <td colspan="3">R$ em caixa: <b>R$ <?php $totalCEF = $somaRecebimentoCEF - $somaPagamentoCEF + $saldoInicialBancoCEF;
+
+                        $totalCEF = $totalCEF + ($totalFluxoCEF);
+                    
+                    echo number_format($totalCEF, 2,',','.');
+                    ?></b></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

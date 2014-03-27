@@ -1,0 +1,80 @@
+<script language="Javascript">
+    function confirmacao(id) {
+        var resposta = confirm("Deseja remover esse registro?");
+ 
+        if (resposta == true) {
+            window.location.href = "<?php echo $this->baseUrl() . '/admin/contasreceber/deletar/id/'; ?>"+id;
+        }
+    }
+</script>
+<!--<a href="<?php //echo $this->url(array('action'=>'new','controller'=>'contaspagar','module'=>'admin'),null,1); ?>" class="btn btn-success"><i class="icon-ok"></i> Adicionar nova conta a receber</a>-->
+<a href="/admin/contasreceber/verificacontas" class="btn"><i class="icon-refresh"></i> Verficar contas a receber</a>
+<table class="table table-hover">
+    <thead>
+        <th>Cliente</th>
+        <th>Vencimento</th>
+        <th>Valor</th>
+        <th>Status</th>
+        <th>Pago dia</th>
+    </thead>
+    <tbody>
+        <?php $total = 0; $totalAPagar = 0; $totalPaga = 0; $totalVencida = 0; $valRecebido = 0; foreach($this->parcelas as $value):  ?>
+        <tr>
+            <td><?php $pessoa = new Application_Model_Pessoa(); $cliente = $pessoa->findAnything('pessoa', 'ID', $value->ID_CLIENTE); echo $cliente[0]->NOME; ?></td>
+            <td><?php echo date('d/m/Y', strtotime($value->DATA_VENCIMENTO)); ?></td>
+            <td> <?php $total += $value->VALOR; echo number_format($value->VALOR,2,',','.'); ?></td>
+            <td> <?php 
+                switch ($value->ID_STATUS_PARCELA) {
+                    case 1:
+                        echo '<span class="label label-warning">A Pagar</sapn>';
+                        $totalAPagar += $value->VALOR;
+                        break;
+                    case 2: 
+                        echo '<span class="label label-success">Paga</sapn>';
+                        $totalPaga += $value->VALOR;
+                        break;
+                    case 3: 
+                        echo '<span class="label label-info">Recebida parcialmente</sapn>';
+                        $parcelaRecebimento = new Application_Model_DbTable_Parcelarecebimento();
+                        $select = $parcelaRecebimento->select();
+                        $select->from('parcela_recebimento')->where('ID_PARCELA_RECEBER = ' . (int)$value->ID);
+                        $rdata = $parcelaRecebimento->fetchAll($select);
+                        foreach($rdata as $val) {
+                            $valRecebido += $val->VALOR_RECEBIDO;
+                        }
+                        $totalAPagar += $value->VALOR - $valRecebido;
+                        $valRecebido = 0;
+                        break;
+                    case 4: 
+                        echo '<span class="label label-important"">Vencida</sapn>';
+                        $totalVencida += $value->VALOR;
+                        break;
+                } 
+            ?></td>
+            <td> <?php 
+            if($value->ID_STATUS_PARCELA == 2 or $value->ID_STATUS_PARCELA == 3) {
+                $parcela = new Application_Model_DbTable_Parcelarecebimento();
+                $select = $parcela->select();
+                $select->from('parcela_recebimento')->where('ID_PARCELA_RECEBER = '.$value->ID);
+                $rdata = $parcela->fetchAll($select);
+                echo date('d/m/Y', strtotime($rdata[0]->DATA_RECEBIMENTO));
+            }
+            ?></td>
+            <td><a href="<?php echo $this->url(array('action' => 'edit', 'controller' => 'contasreceber', 'module' => 'admin', 'id' => $value->ID), null, 1); ?>" class="btn"><i class="icon-pencil"></i> Editar</a> <a href="javascript:func()" class="btn" onClick="confirmacao(<?php echo $value->ID; ?>)"><i class="icon-off"></i> Deletar</a></td>
+        </tr>
+        <?php endforeach; ?>
+        <tr>
+            <td colspan="6">Total a receber : <b>R$ <?php echo number_format($totalAPagar+$totalVencida,2,',','.'); ?></b></td>
+        </tr>
+    </tbody>
+    
+</table>
+<?php $totalGeral = $totalPaga + $totalAPagar + $totalVencida;
+if($totalGeral > 0) {
+?>
+<div class="progress">
+  <div class="bar bar-success" style="width: <?php echo ($totalPaga / $totalGeral) * 100 ."%" ?>"></div>
+  <div class="bar bar-warning" style="width:  <?php echo ($totalAPagar / $totalGeral) * 100 ."%" ?>"></div>
+  <div class="bar bar-danger" style="width:  <?php echo ($totalVencida / $totalGeral) * 100 ."%" ?>"></div>
+</div>
+<?php } ?>

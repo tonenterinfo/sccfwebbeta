@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <title>Sccf</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+<!--        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>-->
+                <script src="/JS/jquery.maskMoney.js" type="text/javascript"></script>
+        <script src="/js/jquery.min.js" type="text/javascript"></script>    
+        <script src="/js/jquery.maskMoney.js" type="text/javascript"></script>
+        <script src="/js/jquery.maskedinput-1.2.2.js" type="text/javascript"></script>
+        <!-- Le styles -->
+        <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <style type="text/css">
+            body {
+                padding-top: 60px;
+                padding-bottom: 40px;
+            }
+            input:focus {
+                background: #FFFFCC;
+            }
+            .sidebar-nav {
+                padding: 9px 0;
+            }
+        </style>
+        <link href="/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap-datetimepicker.min.css">
+        <link rel="shortcut icon" href="<?php echo $this->baseUrl() . '/img/logoicon.png'; ?>">
+<!--    <script src="/bootstrap/js/jquery.js"></script>-->
+    </head>
+    <body>
+
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="/admin">SCCF</a>
+                    <div class="nav-collapse collapse">
+                        <p class="navbar-text pull-right">
+                            Olá <a href="#" class="navbar-link"><?php
+                            if (isset($_SESSION['admin'])) {
+                                foreach ($_SESSION['admin'] as $value) {
+                                    echo $value->nome;
+                                    $nivel = $value->nivel;
+                                }
+                            } else {
+                                header("location:/");
+                            }
+                            ?></a> | <a href="/index/logout" class="navbar-link">Sair</a>
+                        </p>
+                        <ul class="nav">
+                            
+                            <li class="active"><a href="/admin">Administrativo</a></li>
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span3">
+                    <div class="well sidebar-nav">
+                        <ul class="nav nav-list">
+                            <li class="nav-header">CADASTROS</li> 
+                            <?php if ($nivel == 1) {?>
+                            <li><a href="/admin/usuarios"><i class="icon-user"></i>Usuários</a></li>
+                            <li><a href="/admin/produtos"><i class="icon-tag"></i>Produtos</a></li>
+                            <li><a href="/admin/grupoproduto"><i class="icon-folder-close"></i>Grupos de produtos</a></li>
+                            <li><a href="/admin/pessoas/index/classe/2"><i class="icon-star-empty"></i>Fornecedores</a></li>
+                            <?php } ?>
+                            <?php if ($nivel == 2) {?>
+                            <li><a href="/admin/produtos"><i class="icon-tag"></i>Produtos</a></li>
+                            <?php } ?>
+                            <li><a href="/admin/pessoas/index/classe/1"><i class="icon-star"></i>Clientes</a></li>
+                            
+                            
+                            <li class="nav-header">MOVIMENTAÇÃO</li> 
+                            <?php if ($nivel == 1) {?>
+                            <li><a href="/admin/entradaproduto"><i class="icon-repeat"></i>Entrada de produtos</a></li>
+                            <?php } ?>
+                            <li><a href="/admin/saidaproduto"><i class="icon-hand-down"></i>Saída de produtos</a></li>
+
+                            <li class="nav-header">FINANCEIRO</li>
+                            <li><a href="/admin/contasreceber"><i class="icon-magnet"></i>Contas a receber</a></li>
+                            <?php if ($nivel == 1) {?>
+                            <li><a href="/admin/contaspagar"><i class="icon-ok"></i>Contas a pagar</a></li>
+                            
+                            <li class="nav-header">RELATÓRIOS</li>
+                            <li><a href="/admin/fluxodecaixa"><i class="icon-refresh"></i>Fluxo de caixa</a></li>
+                            <li><a href="/admin/relatoriografico"><i class="icon-signal"></i>Relatório gráfico</a></li>
+                            <li><a href="/admin/produtosativo"><i class="icon-tag"></i>Produtos ativo</a></li>
+                            <li><a href="/admin/produtosconsumo"><i class="icon-tag"></i>Produtos consumo</a></li>
+                            <?php } ?>
+                        </ul>
+                    </div><!--/.well -->
+                </div><!--/span-->
+                <div class="span9">
+                    <?php echo $this->layout()->content; ?>
+
+
+                </div><!--/span-->
+            </div><!--/row-->
+                      
+            <hr>
+
+            <footer>
+                <p>&copy; Enter Info 2013</p>
+            </footer>
+
+        </div><!--/.fluid-container-->
+
+        <!-- Le javascript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+<!--        <script src="/bootstrap/js/bootstrap.js"></script>-->
+<!--        <script src="/bootstrap/js/jquery.js"></script>-->
+    <script src="/bootstrap/js/bootstrap-transition.js"></script>
+    <script src="/bootstrap/js/bootstrap-alert.js"></script>
+    <script src="/bootstrap/js/bootstrap-modal.js"></script>
+    <script src="/bootstrap/js/bootstrap-dropdown.js"></script>
+    <script src="/bootstrap/js/bootstrap-scrollspy.js"></script>
+    <script src="/bootstrap/js/bootstrap-tab.js"></script>
+    <script src="/bootstrap/js/bootstrap-tooltip.js"></script>
+    <script src="/bootstrap/js/bootstrap-popover.js"></script>
+    <script src="/bootstrap/js/bootstrap-button.js"></script>
+    <script src="/bootstrap/js/bootstrap-collapse.js"></script>
+    <script src="/bootstrap/js/bootstrap-carousel.js"></script>
+    <script src="/bootstrap/js/bootstrap-typeahead.js"></script>
+    
+<!--        <script src="/bootstrap/js/bootstrap.js"></script>
+        <script src="/bootstrap/js/bootstrap-transition.js"></script>
+        <script src="/bootstrap/js/bootstrap-alert.js"></script>
+        <script src="/bootstrap/js/bootstrap-dropdown.js"></script>
+        <script src="/bootstrap/js/bootstrap-scrollspy.js"></script>
+        <script src="/bootstrap/js/bootstrap-tab.js"></script>
+        <script src="/bootstrap/js/bootstrap-tooltip.js"></script>
+        <script src="/bootstrap/js/bootstrap-popover.js"></script>
+        <script src="/bootstrap/js/bootstrap-button.js"></script>
+        <script src="/bootstrap/js/bootstrap-collapse.js"></script>
+        <script src="/bootstrap/js/bootstrap-carousel.js"></script>
+        <script src="/bootstrap/js/bootstrap-typeahead.js"></script>
+        <script src="/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="/js/bootstrap-datetimepicker.pt-BR.js"></script>-->
+    </body>
+</html>
+

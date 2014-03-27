@@ -1,0 +1,110 @@
+<ul class="breadcrumb">
+    <li><a href="/admin">Início</a> <span class="divider">/</span></li>
+    <li><a href="/admin/contaspagar">Contas a Pagar</a> <span class="divider">/</span></li> 
+    <li class="active">Editar registro</li>
+</ul>
+<form action="" method="post" class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Fornecedor</label>
+        <div class="controls">
+            <select name="ID_FORNECEDOR">
+                <option value="<?php echo $this->idFornecedor; ?>"><?php echo $this->fornecedor; ?></option>
+                <?php foreach($this->fornecedores as $value): ?>    
+                <option value="<?php echo $value->ID; ?>"><?php echo $value->NOME; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Natureza Financeira</label>
+        <div class="controls">
+            <select name="ID_PLANO_NATUREZA_FINANCEIRA_PAGAR">
+                <option value="<?php echo $this->idNatureza ?>"><?php echo $this->natureza; ?></option>
+                <?php foreach($this->naturezafinanceira as $value): ?>
+                    <option value="<?php echo $value->ID; ?>"><?php echo $value->DESCRICAO; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Documento de origem</label>
+        <div class="controls">
+            <select name="ID_DOCUMENTO_ORIGEM">
+                <option value="<?php echo $this->idDocumento; ?>"><?php echo $this->documento; ?></option>
+                <?php foreach($this->documentoOrigem as $value): ?>
+                    <option value="<?php echo $value->ID; ?>"><?php echo $value->DESCRICAO; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Total</label>
+        <div class="controls">
+            <input type="text" name="VALOR_TOTAL" id="valor_total" value="<?php echo 'R$ '. number_format($this->total,2,',','.'); ?>"/>
+        </div>
+        <script type="text/javascript">$("#valor_total").maskMoney({symbol: 'R$ ', thousands: '.', decimal: ',', symbolStay: true});</script>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Valor parcela</label>
+        <div class="controls">
+            <input type="text" name="VALOR" id="valor" value="<?php echo 'R$ '. number_format($this->parcela,2,',','.'); ?>">
+        </div>
+        <script type="text/javascript">$("#valor").maskMoney({symbol: 'R$ ', thousands: '.', decimal: ',', symbolStay: true});</script>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Vencimento</label>
+        <div class="controls">
+            <input type="text" name="VENCIMENTO" id="valor" value="<?php echo date('d/m/Y', strtotime($this->vencimento)); ?>">
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Status</label>
+        <div class="controls">
+            <select name="ID_STATUS_PARCELA">
+                <option value="<?php echo $this->idStatus; ?>"><?php echo $this->stat; ?></option>
+                <?php foreach($this->status as $value): ?>
+                    <option value="<?php echo $value->ID; ?>"><?php echo $value->DESCRICAO; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Data pagamento</label>
+        <div class="controls">
+            <input type="text" name="DATA_PAGAMENTO" id="valor" value="<?php echo ($this->dataPagamento != '') ? date('d/m/Y', strtotime($this->dataPagamento)) : date('d/m/Y', strtotime($this->vencimento)); ?>">
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Tipo pagamento</label>
+        <div class="controls">
+            <select name="ID_TIPO_PAGAMENTO">
+                <option value="<?php echo ($this->idTipoPagamento != '') ? $this->idTipoPagamento : ''; ?>"><?php echo ($this->tpPagamento != '') ? $this->tpPagamento : 'Selecione um tipo'; ?></option>
+                <?php foreach($this->tipoPagamento as $value): ?>
+                    <option value="<?php echo $value->ID; ?>"><?php echo $value->DESCRICAO; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Valor Pago</label>
+        <div class="controls">
+            <input type="text" name="VALOR_PAGO" id="val" value="<?php echo ($this->valPg != '') ? 'R$ '.number_format($this->valPg,2,',','.') : 'R$ '. number_format($this->parcela,2,',','.'); ?>">
+
+            
+            <input type="hidden" name="IDPG" value="<?php echo ($this->idPgmto > 0) ? $this->idPgmto : 0; ?>">
+        </div>
+        <script type="text/javascript">$("#val").maskMoney({symbol: 'R$ ', thousands: '.', decimal: ',', symbolStay: true});</script>
+    </div>
+    
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn">Cadastrar</button>
+        </div>
+    </div>
+</form>

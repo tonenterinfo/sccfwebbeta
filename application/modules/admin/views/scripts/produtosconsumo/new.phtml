@@ -1,0 +1,110 @@
+<style> #nome{ width: 70%; } </style>
+<ul class="breadcrumb">
+    <li><a href="/admin">Início</a> <span class="divider">/</span></li>
+    <li><a href="/admin/produtos">Produtos</a> <span class="divider">/</span></li> 
+    <li class="active">Novo registro</li>
+</ul>
+
+<ul class="nav nav-tabs" id="myTab">
+    <li class="active"><a href="#produto" data-toggle="tab">Cadastro do produto</a></li>
+<!--    <li><a href="#fornecedor" data-toggle="tab">Fornecedores deste produto</a></li>
+    <li><a href="#historico" data-toggle="tab">Histórico de compras deste produto</a></li>-->
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="produto">
+<form action="" method="post" class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label" for="inputEmail">Cód. de Barras (EAN)</label>
+        <div class="controls">
+            <input type="text" id="inputEmail" name="CODIGO_BARRAS">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputNome">Nome</label>
+        <div class="controls">
+            <input type="text" id="nome" placeholder="Nome do produto" name="NOME">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputNome">Grupo</label>
+        <div class="controls">
+            <select name="ID_GRUPO">
+                <?php foreach ($this->grupo as $val): ?>
+                    <option value="<?php echo $val->ID; ?>"><?php echo $val->NOME; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputNome">Fornecedor</label>
+        <div class="controls">
+            <select name="ID_FORNECEDOR">
+                <?php foreach ($this->fornecedores as $val): ?>
+                    <option value="<?php echo $val->ID; ?>"><?php echo $val->NOME; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputNome">Quant. em estoque</label>
+        <div class="controls">
+            <input type="text" id="qtdEstoque" name="QUANTIDADE_ESTOQUE">
+            <script type="text/javascript">$("#qtdEstoque").maskMoney({thousands: '.', decimal: ','});</script>	
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputEmail">Preço de compra</label>
+        <div class="controls">
+            <input type="text" id="precoCompra" name="VALOR_COMPRA">
+            <script type="text/javascript">$("#precoCompra").maskMoney({symbol: 'R$ ', thousands: '.', decimal: ',', symbolStay: true});</script>	
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="inputEmail">Preço de venda</label>
+        <div class="controls">
+            <input type="text" id="precoVenda" name="VALOR_VENDA">
+            <script type="text/javascript">$("#precoVenda").maskMoney({symbol: 'R$ ', thousands: '.', decimal: ',', symbolStay: true});</script>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="inputEmail">NCM</label>
+        <div class="controls">
+            <input type="text" id="inputEmail" name="NCM">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="inputEmail">CST</label>
+        <div class="controls">
+            <input type="text" id="inputEmail" name="CST_NF">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="inputEmail">CFOP Entrada</label>
+        <div class="controls">
+            <select name="ID_CFOP">
+                <?php foreach ($this->cfop as $val): ?>
+                    <option value="<?php echo $val->ID; ?>"><?php echo $val->CFOP; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn btn-large btn-success">Cadastrar</button>
+        </div>
+    </div>
+</form>
+</div>
+<!--    <div class="tab-pane" id="fornecedor">
+        fornecedor
+    </div>  
+    <div class="tab-pane" id="historico">
+        Após cadastrar este produtos, poderá ser visualizado o histórico de compras deste produto.
+    </div>  -->
+</div>

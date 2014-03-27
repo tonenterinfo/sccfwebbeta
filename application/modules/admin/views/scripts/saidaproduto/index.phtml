@@ -1,0 +1,47 @@
+<style type="text/css">.col-tipo, .col-data, .col-total {width: 10%;} .col-cod {width: 5%;}</style>
+<script language="Javascript">
+    function confirmacao(id) {
+        var resposta = confirm("Deseja remover esse registro?");
+ 
+        if (resposta == true) {
+            window.location.href = "<?php echo $this->baseUrl() . '/admin/saidaproduto/deletar/id/'; ?>"+id;
+        }
+    }
+</script>
+<a href="<?php echo $this->url(array('action'=>'new','controller'=>'saidaproduto','module'=>'admin'),null,1); ?>" class="btn btn-success"><i class="icon-ok"></i> Nova saída</a>
+<table class="table table-hover">
+    <thead>
+        <th class="col-cod">Cod</th>
+        <th class="col-data">Data</th>
+        <th class="col-tipo">Tipo</th>
+        <th>Cliente</th>
+        <th>Vendedor</th>
+        <th class="col-total">Total</th>
+        <th></th>
+    </thead>
+    <tbody>   
+        <?php  foreach ($this->vendas as $value) : ?>
+        <tr>
+            <td><?php echo $value->ID;  ?></td>
+            <td class="col-data"><?php echo date('d/m/Y', strtotime($value->DATA_CADASTRO));  ?></td>
+            <td class="col-tipo"><?php echo ($value->TIPO == 'S') ? '<span class="label label-info">Saída</span>' : '<span class="label label-warning">Orçamento</span>';
+            echo ($value->STATUS_PEDIDO == '1') ? '<span class="label label-success">Baixado estoque</span>' : '';?></td>
+            <td><?php  $pessoa = new Application_Model_Pessoa(); $cliente = $pessoa->findAnything('pessoa', 'ID', $value->ID_CLIENTE); echo $cliente[0]->NOME; ?></td>
+            <td><?php $usuarios = new Application_Model_Usuario(); $usuario = $usuarios->findAnything('usuarios', 'ID', $value->ID_VENDEDOR); echo $usuario[0]->nome; ?></td>
+            <td><?php echo 'R$ '.number_format($value->VALOR_TOTAL,2,',','.');  ?></td>
+            <td>
+                <div class="btn-group">
+                <button class="btn dropdown-toggle" data-toggle="dropdown">Ação <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                  <?php echo ($value->TIPO == 'O' ? '<li><a href="#">Alterar para saída</a></li>' : '' ) ?>
+                  <?php echo ($value->STATUS_PEDIDO == '0' ? '<li><a href="/admin/saidaproduto/baixa/id/'.$value->ID.'">Dar baixa no estoque</a></li>' : '' ) ?>
+                  
+                  <li><a href="/admin/saidaproduto/imprimir/id/<?php echo $value->ID;  ?>">Imprimir</a></li>
+                  <li><a href="/admin/saidaproduto/exportar/id/<?php echo $value->ID;  ?>">Exportar XML</a></li>
+                  <?php echo ($value->TIPO == 'O' or $value->STATUS_PEDIDO == '0') ? '<li class="divider"></li><li><a href="javascript:func()" onClick="confirmacao('.$value["ID"].')">Apagar</a></li>' : '' ; ?>
+                </ul>
+              </div><!-- /btn-group --></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

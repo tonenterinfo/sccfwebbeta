@@ -1,0 +1,164 @@
+<style> #nome{ width: 70%; } #sel_prod{width: 105px;} </style>
+<ul class="breadcrumb">
+    <li><a href="/admin">Início</a> <span class="divider">/</span></li>
+    <li><a href="/admin/entradaproduto">Entrada produtos</a> <span class="divider">/</span></li> 
+    <li class="active">Novo registro</li>
+</ul>
+<?php 
+$nfe_cab =  new Application_Model_DbTable_NFecabecalho();
+$empresa = $nfe_cab->findByCh($this->chaveacesso);
+if (!isset($empresa[0])){    
+                
+?>
+<ul class="nav nav-tabs" id="myTab">
+    <li class="active"><a href="#dados" data-toggle="tab">Dados da NF-e</a></li>
+    <li><a href="#produtos" data-toggle="tab">Produtos</a></li>
+    <li><a href="#cobranca" data-toggle="tab">Cobrança</a></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="dados">
+        <form action="/admin/entradaproduto/entra" method="post" class="form-horizontal">
+            <div class="span12">
+            <div class="span4">
+                <div class="control-group">
+                    <label>Chave de acesso:</label>
+                    <input type="hidden" name="arquivo" value="<?php echo $this->arquivo; ?>">
+                    <input type="text" id="inputChave" name="CHAVE_ACESSO" value="<?php echo $this->chaveacesso; ?>">
+                </div>
+                <div class="control-group">
+                    <label>Tipo de Operação:</label>
+                    <input type="text" id="inputChave" name="TIPO_OPERACAO" value="<?php echo $this->tipoNF; ?>">
+                </div>
+            </div>
+            <div class="span4">
+                <div class="control-group">
+                    <label>Data de Emissão:</label>
+                    <input type="text" id="inputDataEmissao" name="DATA_EMISSAO" value="<?php echo date('d/m/Y', strtotime($this->dataEmissao)); ?>" />
+                </div>
+                <div class="control-group">
+                    <label>Forma de pagamento:</label>
+                    <input type="text" id="inputChave" name="INDICADOR_FORMA_PAGAMENTO" value="<?php echo $this->indPag; ?>">
+                </div>
+            </div>
+            <div class="span4">
+                <div class="control-group">
+                    <label>Data Entrada/Saída:</label>
+                    <input type="text" id="inputEmail" name="DATA_ENTRADA_SAIDA" value="<?php echo date('d/m/Y', strtotime($this->dataSaidaEntrada)); ?>">
+                </div>
+                <div class="control-group">
+                    <label>Natureza da operação:</label>
+                    <input type="text" id="inputChave" name="NATUREZA_OPERACAO" value="<?php echo $this->natOP; ?>">
+                </div>
+            </div>
+            </div>
+            <br>
+            <h5>Emitente / Fornecedor:</h5>
+
+            <div class="span3">
+                
+                <div class="control-group">
+                    <label>CNPJ:</label>
+                    <input type="text" id="inputEmail" name="CPF_CNPJ" value="<?php echo $this->cnpjEmit; ?>">
+                <?php 
+                $pessoaJuridica =  new Application_Model_Pessoajuridica();
+                $empresa = $pessoaJuridica->findAnything('pessoa_juridica', 'CNPJ', $this->cnpjEmit);
+                echo isset($empresa[0]) ? '<span class="label label-success">Fornecedor já cadastrado, prossiga.</span><input type="hidden" name="fornecedor" value="'.$empresa['0']->ID_PESSOA.'" />' : '<span class="label label-important">Fornecedor não encontrado, o sistema irá cadastrá-lo automaticamente.</span><input type="hidden" name="fornecedor" value="0" />';       
+                ?>
+                </div>
+                
+            </div>
+            <div class="span3">
+                <div class="control-group">
+                    <label>Nome:</label>
+                    <input type="text" id="inputEmail" name="RAZAO_SOCIAL" value="<?php echo $this->xNome; ?>">
+                </div>
+            </div>
+            <div class="span3">
+                <div class="control-group">
+                    <label>Cidade:</label>
+                    <input type="text" id="inputEmail" name="NOME_MUNICIPIO"  value="<?php echo $this->xMun; ?>">
+                </div>
+            </div>
+           
+
+    </div>
+    <div class="tab-pane" id="produtos">
+        Produtos existentes serão incrementados ao estoque os não existentes serão cadastrados.
+        <table class="table table-hover">
+            <thead>
+                <th>Existente?</th>
+<!--                <th>Item</th>-->
+                <th>EAN</th>
+                <th>Nome do Produto</th>
+            </thead>
+            <tbody>   
+                <?php $cont = 1; foreach ($this->produtos as $value): ?>
+                <tr>
+                    <td>
+                        <?php 
+                        $produtos =  new Application_Model_Produto();   
+                        $produtos2 = new Application_Model_DbTable_Produto();
+                        $select = $produtos2->select();
+                        $select->from('produto')->order('NOME ASC');
+                        $allProduts = $produtos2->fetchAll($select);
+                        if($value->prod->cEAN == "") {
+                            $value->prod->cEAN = 'NC';
+                        }
+                        $produto = $produtos->findAnything('produto', 'CODIGO_BARRAS', $value->prod->cEAN);
+                        
+                        if(isset($produto[0])) {
+                            echo '<span class="label label-success">SIM</span>'.$produto[0]->ID;
+                        } else {
+                            echo '<span class="label label-important">NÃO encontrado</span>';
+                            echo '<select name="PRODUTOS[]" id="sel_prod">
+                                <option value="'.$value->prod->cEAN.'-0-'.$value->prod->qCom.'-'.$value->prod->vUnCom.'-'.str_replace("-"," ",$value->prod->xProd).'-'.$value->prod->NCM.'-'.$value->prod->CFOP.'-'.$value->prod->uCom.'">Encontrar</option>';
+                            foreach($allProduts as $val) :
+                                echo '<option value="'.$value->prod->cEAN.'-'.$val->ID.'-'.$value->prod->qCom.'-'.$value->prod->vUnCom.'-'.str_replace("-"," ",$value->prod->xProd).'-'.$value->prod->NCM.'-'.$value->prod->CFOP.'-'.$value->prod->uCom.'">'.$val->NOME.'</option>';
+                            endforeach;
+                            echo '</select>';
+                        }
+                         
+                        ?>
+                        
+                    </td>
+<!--                    <td><?php echo $cont; ?></td>-->
+                    <td><?php echo $value->prod->cEAN; ?></td>
+                    <td><?php echo $value->prod->xProd; ?></td>
+                </tr>
+                <?php $cont ++; endforeach; ?>
+            </tbody>
+        </table>
+    </div>  
+    <div class="tab-pane" id="cobranca">
+        Duplicatas serão lançadas nas contas a pagar.
+        <table class="table table-hover">
+            <thead>
+                <th>Nº Duplicata</th>
+                <th>Data Vencimento</th>
+                <th>Valor</th>
+            </thead>
+            <tbody>     
+                <?php if($this->cobranca != null) { foreach ($this->cobranca as $value) : ?>
+                <tr>
+                    <td><?php echo $value->nDup; ?></td>
+                    <td><?php echo date("d/m/Y", strtotime($value->dVenc)); ?></td>
+                    <td><?php echo "R$ ". $value->vDup; ?></td>
+                </tr>
+                <?php endforeach; }  ?>
+            </tbody>
+        </table>
+    </div>  
+</div>
+<?php } else { echo '<div class="alert alert-block">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <h4>Atenção!</h4> Já foi dada entrada esta NFe no sistema!
+</div>'; } ?>
+<div class="control-group">
+    <div class="controls">
+        <button type="submit" class="btn btn-large btn-success">Cadastrar</button>
+    </div>
+</div>
+</form>
+
+<script src="/bootstrap/js/jquery.js"></script>

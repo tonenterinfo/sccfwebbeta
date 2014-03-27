@@ -1,0 +1,288 @@
+<ul class="breadcrumb">
+    <li><a href="/admin">Início</a> <span class="divider">/</span></li>
+    <?php if ($this->classe == 1) : ?>
+        <li><a href="/admin/pessoas/index/classe/1">Cliente</a> <span class="divider">/</span></li>
+    <?php endif; ?>
+    <?php if ($this->classe == 2) : ?>
+        <li><a href="/admin/pessoas/index/classe/2">Fornecedor</a> <span class="divider">/</span></li>
+    <?php endif; ?>
+    <li class="active">Novo registro</li>
+</ul>
+<form action="" method="post" class="form-horizontal">
+    <input type="hidden" name="CLASSE" value="<?php echo $this->classe; ?>" />
+    <div class="control-group">
+        <label class="control-label" for="inputNome">Tipo de pessoa</label>
+        <div class="controls">
+            <label class="radio inline">
+                <input type="radio" name="TIPO" id="optionsRadios1" value="F" checked>
+                Física
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="TIPO" id="optionsRadios2" value="J">
+                Jurídica
+            </label>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="inputEmail">Nome</label>
+        <div class="controls">
+            <input type="text" value="" name="NOME" class="span8">
+        </div>
+    </div>
+
+    <div class="controls controls-row">
+        <input class="span4" type="text" placeholder="Email" name="EMAIL">
+        <input class="span4" type="text" placeholder="Site" name="SITE">
+    </div>
+    <br>
+    <div class="fisica">
+        <div class="controls controls-row">
+            <input class="span3" type="text" placeholder="CPF" name="CPF">
+            <input class="span3" type="text" placeholder="RG" name="RG">
+            <input class="span3" type="text" placeholder="Data nasc." name="DATA_NASCIMENTO">
+        </div>
+    </div>
+
+    <div class="juridica">
+        <div class="controls controls-row">
+            <input class="span8" type="text" placeholder="Razão social" name="RAZAO_SOCIAL"> <br><br>
+            <input class="span4" type="text" placeholder="CNPJ" name="CNPJ">
+            <input class="span4" type="text" placeholder="Insc. Municipal" name="INSTRICAO_MUNICIPAL">
+        </div>
+    </div>
+    <br>
+
+    <ul class="nav nav-tabs" id="myTab">
+        <?php if ($this->classe == 1) : ?>
+            <li class="active"><a href="#cliente" data-toggle="tab">Cliente</a></li>
+        <?php endif; ?>
+        <?php if ($this->classe == 2) : ?>
+            <li class="active"><a href="#fornecedor" data-toggle="tab">Fornecedor</a></li>
+        <?php endif; ?>
+        <li><a href="#enderecos" data-toggle="tab">Endereços</a></li>
+
+        <li><a href="#inscricao" data-toggle="tab"><div class="juridica">Inscrição Estadual</div></a></li>
+
+
+    </ul>
+
+    <div class="tab-content">
+        <?php if ($this->classe == 1) : ?>
+            <div class="tab-pane active" id="cliente">
+                <div class="control-group">
+                    <label class="control-label" for="inputEmail">Cliente desde </label>
+                    <div class="controls">
+                        <div id="datetimepicker1" class="input-append date">
+                            <input data-format="dd/MM/yyyy" type="text" name="DESDE"></input>
+                            <span class="add-on">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                                </i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputEmail">Data do cadastro </label>
+                    <div class="controls">
+                        <div id="datetimepicker2" class="input-append date">
+                            <input data-format="dd/MM/yyyy" type="text" name="DATA_CADASTRO" disabled></input>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputEmail">Situação</label>
+                    <div class="controls" >
+                        <select span="3" name="ID_SITUACAO_FOR_CLI">
+                            <?php foreach ($this->situacaoForCli as $value): ?>
+                                <option value="<?php echo $value->ID; ?>"><?php echo $value->NOME; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputEmail">Observações</label>
+                    <div class="controls" >
+                        <textarea rows="3" name="OBSERVACOES"></textarea>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+        <?php if ($this->classe == 2) : ?>
+            <div class="tab-pane active" id="fornecedor">
+                
+                <div class="control-group">
+                    <label class="control-label" for="inputEmail">Desde </label>
+                    <div class="controls">
+                        <div id="datetimepicker1" class="input-append date">
+                            <input data-format="dd/MM/yyyy" type="text" name="DESDE_FORNECEDOR"></input>
+                            <span class="add-on">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                                </i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputEmail">Data do cadastro </label>
+                    <div class="controls">
+                        <div id="datetimepicker2" class="input-append date">
+                            <input data-format="dd/MM/yyyy" type="text" name="DATA_CADASTRO" disabled></input>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputEmail">Situação</label>
+                    <div class="controls" >
+                        <select span="3" name="ID_SITUACAO_FOR_CLI">
+                            <?php foreach ($this->situacaoForCli as $value): ?>
+                                <option value="<?php echo $value->ID; ?>"><?php echo $value->NOME; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <div class="controls">
+                        <label class="checkbox inline">
+                            <input type="checkbox" id="optanteSimplesNacional" NAME="OPTANTE_SIMPLES" value="S"> Optante Simples Nacional
+                          </label>
+                          <label class="checkbox inline">
+                            <input type="checkbox" id="sofreRetencao" NAME="SOFRE_RETENCAO" value="S"> Sofre retenção
+                          </label>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label" for="inputEmail">Observações</label>
+                    <div class="controls" >
+                        <textarea rows="3" name="OBSERVACOES"></textarea>
+                    </div>
+                </div>
+                
+                
+            </div>
+        <?php endif; ?>
+        <div class="tab-pane" id="enderecos">
+           
+            <!-- Button to trigger modal -->
+            <a href="#myModalNovoEndereco" role="button" class="btn btn-small btn-primary" data-toggle="modal">Novo endereço</a>
+
+            <!-- Modal -->
+            
+                <div id="myModalNovoEndereco" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h3 id="myModalLabel">Novo endereço</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p align="left">
+                            <input type="hidden" name="ID_ENDERECO" value="0" />
+                            <input type="hidden" name="ID_PESSOA" value="0" />
+                            <input type="hidden" name="classe" value="<?php echo $this->classe; ?>" />
+                            <input class="span8" type="text" placeholder="Logradouro" name="LOGRADOURO"> 
+                            <input class="span2" type="text" placeholder="número" name="NUMERO">
+                            <input class="span2" type="text" placeholder="Complemento" name="COMPLEMENTO"><br><br>
+                            <input class="span4" type="text" placeholder="Cep" name="CEP">
+                            <input class="span4" type="text" placeholder="Bairro" name="BAIRRO">
+                            <select class="span4" name="UF" id="uf">
+                                <?php foreach ($this->estado as $value) : ?>
+                                    <option value="<?php echo $value->ID; ?>"><?php echo $value->NOME; ?></option>
+                                <?php endforeach; ?>
+                            </select><br><br>
+                            <select class="span4" name="ID_MUNICIPIO" id="combo_cidade">
+                                
+                            </select>
+                            <input class="span4" type="text" placeholder="Telfone" name="FONE">
+                            <input class="span4" type="text" placeholder="Fax" name="FAX"><br><br>
+                            <label class="checkbox inline">
+                                <input type="checkbox" id="inlineCheckbox1" value="S" name="PRINCIPAL"> Principal
+                            </label>
+                            <label class="checkbox inline">
+                                <input type="checkbox" id="inlineCheckbox2" value="S" name="ENTREGA"> Entrega
+                            </label>
+                            <label class="checkbox inline">
+                                <input type="checkbox" id="inlineCheckbox3" value="S" name="COBRANCA"> Cobrança
+                            </label>
+                            <label class="checkbox inline">
+                                <input type="checkbox" id="inlineCheckbox3" value="S" name="CORRESPONDENCIA"> Correspondencia
+                            </label>
+                            <br> 
+                            
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn" data-dismiss="modal" aria-hidden="true">Fechar</button>
+                        <button type="submit" id="salvar_endereco" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Salvar endereço</button>
+                    </div>
+                </div>
+            
+<!-- Modal Edita Endereço -->
+            <div id="editarEndereco" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Editar endereço</h3>
+                </div>
+                <div class="modal-body" id="modalEditaEndereco">
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Fechar</button>
+                    <button type="submit" id="salvar_endereco_edit" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Salvar endereço</button>
+                </div>
+            </div>
+
+            <!---------------->
+            
+
+
+            <table class="table table-hover">
+                <thead>
+                <th>Endereço</th>
+                <th>Tel/Fax</th>
+                <th>Tipo</th>
+                <th></th>
+                </thead>
+                <tbody id="retorno_endereco">
+                    
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="tab-pane" id="inscricao">
+            <div class="juridica">
+                IE
+            </div>
+        </div>
+
+
+    </div>
+
+    <br>
+
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn btn-large btn-success">Cadastrar</button>
+        </div>
+    </div>
+</form>
+<script src="/js/pessoas/actions.js" type="text/javascript"></script>
+<script type="text/javascript">
+     $("input[name='CPF']").mask("999.999.999-99");
+     $("input[name='CNPJ']").mask("99.999.999/9999-99");
+</script>
+<script type="text/javascript">
+    $(function() {
+        $('#datetimepicker1, #datetimepicker2').datetimepicker({
+            language: 'pt-BR'
+        });
+    });
+</script>
+<script src="/bootstrap/js/jquery.js"></script>

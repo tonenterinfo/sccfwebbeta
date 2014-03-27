@@ -1,0 +1,141 @@
+<ul class="breadcrumb">
+    <li><a href="/admin">Início</a> <span class="divider">/</span></li>
+    <li><a href="/admin/contasreceber">Contas a Receber</a> <span class="divider">/</span></li> 
+    <li class="active">Editar registro</li>
+</ul>
+<form action="" method="post" class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Cliente</label>
+        <div class="controls">
+            <select name="ID_CLIENTE">
+                <option value="<?php echo $this->idCliente; ?>"><?php echo $this->cliente; ?></option>
+                <?php foreach($this->clientes as $value): ?>    
+                <option value="<?php echo $value->ID; ?>"><?php echo $value->NOME; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Natureza Financeira</label>
+        <div class="controls">
+            <select name="ID_PLANO_NATUREZA_FINANCEIRA">
+                <option value="<?php echo $this->idNatureza ?>"><?php echo $this->natureza; ?></option>
+                <?php foreach($this->naturezafinanceira as $value): ?>
+                    <option value="<?php echo $value->ID; ?>"><?php echo $value->DESCRICAO; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Total</label>
+        <div class="controls">
+            <input type="text" name="VALOR_TOTAL" id="valor_total" value="<?php echo 'R$ '. number_format($this->total,2,',','.'); ?>"/>
+        </div>
+        <script type="text/javascript">$("#valor_total").maskMoney({symbol: 'R$ ', thousands: '.', decimal: ',', symbolStay: true});</script>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Valor parcela</label>
+        <div class="controls">
+            <input type="text" name="VALOR" id="valor" value="<?php echo 'R$ '. number_format($this->parcela,2,',','.'); ?>">
+        </div>
+        <script type="text/javascript">$("#valor").maskMoney({symbol: 'R$ ', thousands: '.', decimal: ',', symbolStay: true});</script>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Status</label>
+        <div class="controls">
+            <select name="ID_STATUS_PARCELA">
+                <option value="<?php echo $this->idStatus; ?>"><?php echo $this->stat; ?></option>
+                <?php foreach($this->status as $value): ?>
+                    <option value="<?php echo $value->ID; ?>"><?php echo $value->DESCRICAO; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    
+    
+    <div class="control-group">
+        <label class="control-label" for="selectStatus">Vencimento</label>
+        <div class="controls">
+            <input type="text" name="VENCIMENTO" id="valor" value="<?php echo date('d/m/Y', strtotime($this->vencimento)); ?>">
+        </div>
+    </div>
+    
+    <button class="btn" type="button" id="add"><i class="icon-plus"></i> Adicionar recebimento</button> <br><br>
+    
+    
+    <?php if(isset($this->recebimentos)) { foreach($this->recebimentos as $val): ?>
+    <div class="row show-grid">
+    <div class="span3">
+    <div class="control-group">
+        <div class="controls">
+            <input type="text" name="DATA_RECEBIMENTO[]" id="valor" placeholder="Data pagamento" value="<?php echo ($val->DATA_RECEBIMENTO != '') ? date('d/m/Y', strtotime($val->DATA_RECEBIMENTO)) : ''; ?>">
+        </div>
+    </div>
+    </div>
+    <div class="span3">
+    <div class="control-group">
+        <div class="controls">
+            <select name="ID_TIPO_RECEBIMENTO[]">
+                <option value="<?php echo ($val->ID_TIPO_RECEBIMENTO != '') ? $val->ID_TIPO_RECEBIMENTO : ''; ?>"><?php echo ($val->ID_TIPO_RECEBIMENTO != '') ? $val->ID_TIPO_RECEBIMENTO : 'Selecione um tipo'; ?></option>
+                <?php foreach($this->tipoRecebimento as $value): ?>
+                    <option value="<?php echo $value->ID; ?>"><?php echo $value->ID." - ". $value->DESCRICAO; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    </div>
+    <div class="span3">
+    <div class="control-group">
+        <div class="controls">
+            <input type="text" name="VALOR_RECEBIDO[]" placeholder="Valor pago" id="val" value="<?php echo ($val->VALOR_RECEBIDO != '') ? 'R$ '.number_format($val->VALOR_RECEBIDO,2,',','.') : ''; ?>">
+            <input type="hidden" name="IDPG[]" value="<?php echo ($val->ID > 0) ? $val->ID : 0; ?>">
+        </div>
+        <script type="text/javascript">$("#val").maskMoney({symbol: 'R$ ', thousands: '.', decimal: ',', symbolStay: true});</script>
+    </div>
+    </div>
+        </div>
+    
+    <?php endforeach; }?>
+    
+    <div id="recebimento">
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn">Cadastrar</button>
+        </div>
+    </div>
+</form>
+<script language="Javascript">
+    
+    $(document).ready(function() {
+        var addRecebimento = function() {
+            var inputs = '<div class="row show-grid">';
+            inputs += '<div class="span3">';
+            inputs += '<div class="control-group">'
+            inputs += '<div class="controls">';
+            inputs += '<input type="text" name="DATA_RECEBIMENTO[]" id="valor" placeholder="Data pagamento" value="">';
+            inputs += '</div></div></div>';
+            inputs += '<div class="span3">';
+            inputs += '<div class="control-group">';
+            inputs += '<div class="controls">';
+            inputs += '<select name="ID_TIPO_RECEBIMENTO[]">'; 
+            inputs += '<?php foreach($this->tipoRecebimento as $value): ?>';
+            inputs += '<option value="<?php echo $value->ID; ?>"><?php echo $value->DESCRICAO; ?></option>';
+            inputs += '<?php endforeach; ?>'; 
+            inputs += '</select></div></div></div>';  
+            inputs += '<div class="span3">';
+            inputs += '<div class="control-group">';
+            inputs += '<div class="controls">';
+            inputs += '<input type="text" name="VALOR_RECEBIDO[]" placeholder="Valor pago" id="val" value="">';
+            inputs += '<input type="hidden" name="IDPG[]" value="0"></div></div></div>';
+           
+
+            $("#recebimento").append(inputs);
+        };
+        
+         $('#add').bind('click', addRecebimento);
+    });
+</script>

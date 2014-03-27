@@ -1,0 +1,13 @@
+<?php foreach ($this->end as $value) : ?>
+    <tr> 
+        <td><?php echo $value->LOGRADOURO . ', ' . $value->NUMERO . ' - ' . $value->COMPLEMENTO; ?></td>
+        <td><?php echo $value->FONE; ?></td>
+        <td><?php
+            echo ($value->PRINCIPAL == "S") ? "[Principal] " : "";
+            echo ($value->ENTREGA == "S") ? "[Entrega] " : "";
+            echo ($value->COBRANCA == "S") ? "[Cobrança] " : "";
+            echo ($value->CORRESPONDENCIA == "S") ? "[Correspondencia] " : "";
+            ?></td>
+        <td></td>
+    </tr>
+<?php endforeach; ?>

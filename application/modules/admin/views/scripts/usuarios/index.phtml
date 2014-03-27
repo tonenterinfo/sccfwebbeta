@@ -1,0 +1,32 @@
+<script language="Javascript">
+    function confirmacao(id) {
+        var resposta = confirm("Deseja remover esse registro?");
+ 
+        if (resposta == true) {
+            window.location.href = "<?php echo $this->baseUrl() . '/admin/usuarios/deletar/id/'; ?>"+id;
+        }
+    }
+</script>
+<a href="<?php echo $this->url(array('action'=>'new','controller'=>'usuarios','module'=>'admin'),null,1); ?>" class="btn btn-success"><i class="icon-ok"></i> Adicionar novo registro</a>
+<table class="table table-hover">
+    <thead>
+        <th>Cod.</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Nível</th>
+        <th>Status</th>
+        <th>Ação</th>
+    </thead>
+    <tbody>
+        <?php foreach($this->usuarios as $value): ?>
+        <tr>
+            <td><?php echo $value->id; ?></td>
+            <td><?php echo $value->nome; ?></td>
+            <td><?php echo $value->email; ?></td>
+            <td><?php switch ($value->nivel) {case 1: echo "Administrador"; break; case 2: echo "Colaborador"; break;}; ?></td>
+            <td><?php if($value->status == 1) { echo "Ativo"; } else { echo "Inativo"; } ?></td>
+            <td><a href="<?php echo $this->url(array('action' => 'edit', 'controller' => 'usuarios', 'module' => 'admin', 'id' => $value['id']), null, 1); ?>" class="btn"><i class="icon-pencil"></i> Editar</a> <a href="javascript:func()" class="btn" onClick="confirmacao(<?php echo $value['id']; ?>)"><i class="icon-off"></i> Deletar</a></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

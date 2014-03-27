@@ -1,0 +1,19 @@
+
+<?php 
+$total = 0;
+foreach($this->produtosCarrinho as $value): ?>
+<tr>
+    <td><?php 
+    $produtos = new Application_Model_Produto();
+    $produto = $produtos->findAnything('produto', 'ID', $value->ID_PRODUTO);
+    echo $produto[0]->NOME;
+    ?></td>
+    <td><input type="text" name="VALOR_UNITARIO" class="saida-produto-carrinho" id="<?php echo $value->ID; ?>" value="<?php echo $value->VALOR_UNITARIO; ?>"></td>
+    <td><input type="text" name="QUANTIDADE" class="saida-produto-carrinho" id="<?php echo $value->ID; ?>" value="<?php echo $value->QUANTIDADE; ?>"></td>
+    <td><input type="text" name="DESCONTO" class="saida-produto-carrinho" id="<?php echo $value->ID; ?>" value="<?php echo $value->DESCONTO; ?>"></td>
+    <td><?php $total += $value->TOTAL; echo "R$ ". number_format($value->TOTAL,2,',','.'); ?><input type="hidden" NAME="VALOR_SUBTOTAL" value="<?php echo $value->QUANTIDADE * $value->VALOR_UNITARIO; ?>" /><input type="hidden" NAME="VALOR_TOTAL" value="<?php echo $value->TOTAL; ?>" /><input type="hidden" NAME="VALOR_UNITARIO" value="<?php echo $value->VALOR_UNITARIO; ?>" /> </td>
+</tr>
+<?php endforeach; ?>
+<tr>
+    <td colspan="5">Sub-total: <b><input type="text" class="saida-produto" name="VALOR_SUBTOTAL" value="<?php echo $total; ?>" readonly="readonly"/></b> <div class="align"><input type="text" name="TAXA_DESCONTO" class="saida-produto" placeholder="% Desconto" id="taxa_desconto" value="0" /> &nbsp;&nbsp;<input type="text" class="saida-produto" name="VALOR_DESCONTO" id="valor_desconto" placeholder="Valor desconto" value="0" />&nbsp;&nbsp;<b>TOTAL: </b><input type="text" class="saida-produto" name="VALOR_TOTAL" value="<?php echo $total; ?>" id="valor_total" readonly="readonly" id="valor_total"/> </div></td>
+</tr>

@@ -1,0 +1,30 @@
+.input, .up, .upMaisPecas, .upMaisPecasArranque, .upMaisPecasBaldrame, .upMaisPecasPilares, .upMaisPecasPilares2, .upMaisPecasPilares3, .upMaisPecasPilares4, .upMaisPecasVigas, .upMaisPecasVigas2, .upMaisPecasVigas3, .upMaisPecasVigas4, .upEstribo, .upEstriboArranque, .upEstriboVigas, .upEstriboVigas2, .upEstriboVigas3, .upEstriboBaldrame, .upEstriboPilares, .upEstriboPilares2, .upEstriboPilares3, .upEstriboPilares4, .upArranque, .upBaldrame, .upPilares, .upPilares2, .upPilares3, .upPilares4, .upVigas, .upVigas2, .upVigas3, .upVigas4, .upLajes, .upLajes2, .upLajes3, .upLajes4, .upEsteira {
+        width: 95px;
+    }
+    .servico {
+        width: 63px;
+    }
+    input.result, input.resultEsteira {
+        width: 230px;
+        text-align: center;
+    }
+
+    input.resultEsteira {
+        width: 190px;
+    }
+    .tabbable  {
+        width: 1100px;
+    }
+    .itenFundacao, .itenArranque, .itenBaldrame, .itenPilares, .itenPilares2, .itenPilares3, .itenPilares4, .itenVigas, .itenVigas2, .itenVigas3, .itenLajes1, .itenLajes2, .itenLajes3, .itenEsteira {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px #ccc dashed; 
+    }
+    i {
+        font-family: times;
+        font-size: 15px;
+        font-weight: bold;
+    }
+    .clear {
+        clear: both;
+    }

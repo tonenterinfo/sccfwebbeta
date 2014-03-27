@@ -1,0 +1,56 @@
+<ul class="breadcrumb">
+    <li><a href="/admin">Início</a> <span class="divider">/</span></li>
+    <li><a href="/admin/pessoas/index/classe/1">Clientes</a> <span class="divider">/</span></li>
+    <li class="active">Histórico</li>
+</ul>
+
+<h4>Histório de compras de <?php echo $this->cliente; ?></h4>
+
+<table class="table table-hover">
+	<tbody>
+		<?php foreach ($this->lancamentos as $value): ?>
+		<tr> 
+			<td> 
+				<a href="javascript:func()" id="<?php echo $value->ID; ?>" class="detalhes" title="Ver parcelas" ><img src="/img/mais_icon.gif" /></a> Cod.: <?php echo $value->ID." | Data: <b>".date('d/m/Y', strtotime($value->DATA_LANCAMENTO))."</b> | Total da compra: <b>R$ ".number_format($value->VALOR_TOTAL,2,',','.')."</b>"; ?>
+				<br>
+
+				<div class="retorno_parcelas" id="retorno_parcelas<?php echo $value->ID; ?>"></div>
+				<div class="carregando"></div>
+			</td>
+		</tr>
+				
+		<?php endforeach; ?>
+
+	</tbody>
+</table>
+<script type="text/javascript">
+	
+	$(document).ready(function() {
+
+		$(".detalhes").click(function(){
+
+			var id = $(this).attr("id");
+			$.ajax({
+                url: '/admin/pessoas/parcelas/',
+                dataType: 'html',
+                type: 'POST',
+                data: {id: id},
+                beforeSend: function() {
+                	//$(this).html("carregando...");
+                },
+                complete: function() {
+                },
+                success: function(resultado) {
+                    $('.retorno_parcelas').empty();
+                    $('#retorno_parcelas'+id+'').html(resultado);
+                },
+                error: function(xhr) {
+                    $('.retorno_parcelas').html(xhr.status);
+                }
+            });
+
+		})
+
+	})
+
+</script>

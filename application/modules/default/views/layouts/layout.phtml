@@ -1,0 +1,42 @@
+<?php echo $this->doctype(); ?>
+
+<html>
+    <head>
+        <meta http-equiv="Content-Language" content="pt-br" />
+        <meta name="robots" content="index,follow" />
+        <meta name="sitemap" content="sitemap.xml">
+        <meta name="description" content="Tornearia Volponi - Indústria e Comércio e VCM - Serviços de Corte de Dobra. Taiobeiras, Alto Rio Pardo, Norte de Minas Gerais, Brasil">
+        <meta name="keywords" content="Tornearia Volponi, Industria, corte, dobra, chapa, soldas, Humberto Volponi, Taiobeiras, Sainas, Rio Pardo de Minas, São João do Paraíso, Curral de Dentro, Alto Rio Pardo, Norte de Minas, Minas Gerais">
+        <meta name="author" content="Tornearia Volponi">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <?php //$this->headMeta(); ?>
+        <?php echo $this->headTitle() ?>
+
+        <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+        <link href="/css/geral.css" type="text/css" rel="stylesheet" />
+        <script type="text/javascript" src="/js/jquery.js"></script>
+        <script type="text/javascript" src="/js/jquery.pngFix.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $(document).pngFix();
+            });
+        </script>
+
+        <link rel="shortcut icon" href="<?php echo $this->baseUrl() . '/img/logoicon.png'; ?>">
+
+    </head>
+    <body>
+        <div id="geral">
+
+            <div id="conteudo">           
+                <?php echo $this->layout()->content; ?>
+            </div>
+        </div>
+
+
+
+    </body>
+</html>
+
